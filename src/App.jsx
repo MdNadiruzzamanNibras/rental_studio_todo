@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import "./App.css"
 
 
 const App = () => {
     const [items, setitems] = useState([])
+    const [line , setLine] =useState({})
    const [enterkey, setEnterkey] = useState('');
   const additem = async(e) =>{
         e.preventDefault();
@@ -43,6 +44,12 @@ const App = () => {
           .then(res =>  res.json())
           .then(data=>setitems(data))
     }, [items])
+    const handleCheckboxChange = (taskId) => {
+  setLine((prevCheckedTasks) => ({
+    ...prevCheckedTasks,
+    [taskId]: !prevCheckedTasks[taskId]
+  }));
+};
     const deleteTodo =id=>{
         const processed = window.confirm('Are you sure task')
         if(processed){
@@ -75,8 +82,9 @@ const App = () => {
             </form>
             <div className='Task-list'>
                 {items && items?.map(item=><div key={item._id} className='flex justify-between align-middle text-lg font-semibold my-1'>
-                 <input type="checkbox" name="" id=""  className='mr-1'/>
-                    <p className='item-content'>{item.todo}</p>
+                 <input type="checkbox" checked={line[item._id]} onClick={()=>handleCheckboxChange(item._id)} name="" id=""  className='mr-1'/>
+                    
+                    <p className={line[item._id] ? "item-content line-through" : "item-content"}>{item.todo}</p>
                     {/* <button  className='btn-sm rounded-full bg-green-600 px-5 text-white' >Edit</button> */}
                     <button  onClick={() => deleteTodo(item._id)} className='bg-red-600 mx-2 rounded-full px-4 btn-sm bodder text-white'>Delete</button>
                 </div>)}
